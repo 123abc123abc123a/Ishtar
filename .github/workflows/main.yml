@@ -13,6 +13,9 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Install Theos Dependencies
+        run: brew install ldid
+
       - name: Setup Theos and iOS SDK
         run: |
           echo "THEOS=$HOME/theos" >> $GITHUB_ENV
@@ -37,3 +40,4 @@ jobs:
         with:
           name: Compiled-Dylib
           path: .theos/obj/**/*.dylib
+          include-hidden-files: true
