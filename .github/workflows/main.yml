@@ -1,7 +1,7 @@
 name: Build iOS Tweak (Theos)
 
 on:
-  workflow_dispatch: # This allows you to manually trigger the build
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,8 +17,16 @@ jobs:
         run: |
           echo "THEOS=$HOME/theos" >> $GITHUB_ENV
           git clone --recursive https://github.com/theos/theos.git $HOME/theos
-          rm -rf $HOME/theos/sdks # Clears the default folder to prevent Git clone conflicts
+          rm -rf $HOME/theos/sdks
           git clone https://github.com/theos/sdks.git $HOME/theos/sdks
+          
+          # Fix missing SDK error: Find any iOS 15/16/17 SDK and alias it to 16.0
+          cd $HOME/theos/sdks
+          AVAILABLE_SDK=$(ls -d iPhoneOS*.sdk | head -n 1)
+          if [ ! -z "$AVAILABLE_SDK" ]; then
+            ln -s "$AVAILABLE_SDK" iPhoneOS16.0.sdk
+            echo "Aliased $AVAILABLE_SDK to iPhoneOS16.0.sdk"
+          fi
 
       - name: Compile Tweak
         run: |
