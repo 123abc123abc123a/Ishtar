@@ -16,20 +16,12 @@ jobs:
       - name: Install Theos Dependencies
         run: brew install ldid
 
-      - name: Setup Theos and iOS SDK
+      - name: Setup Theos
         run: |
           echo "THEOS=$HOME/theos" >> $GITHUB_ENV
           git clone --recursive https://github.com/theos/theos.git $HOME/theos
-          rm -rf $HOME/theos/sdks
-          git clone https://github.com/theos/sdks.git $HOME/theos/sdks
-          
-          # Fix missing SDK error: Find any iOS 15/16/17 SDK and alias it to 16.0
-          cd $HOME/theos/sdks
-          AVAILABLE_SDK=$(ls -d iPhoneOS*.sdk | head -n 1)
-          if [ ! -z "$AVAILABLE_SDK" ]; then
-            ln -s "$AVAILABLE_SDK" iPhoneOS16.0.sdk
-            echo "Aliased $AVAILABLE_SDK to iPhoneOS16.0.sdk"
-          fi
+          # By NOT downloading theos/sdks here, we force Theos to use the 
+          # system Xcode SDK which contains the missing files Swift needs.
 
       - name: Compile Tweak
         run: |
