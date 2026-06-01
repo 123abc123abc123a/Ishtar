@@ -1,0 +1,30 @@
+name: Build iOS Tweak (Theos)
+
+on:
+  workflow_dispatch: # This allows you to manually trigger the build
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Theos and iOS SDK
+        run: |
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+          git clone --recursive https://github.com/theos/theos.git $HOME/theos
+          git clone https://github.com/theos/sdks.git $HOME/theos/sdks
+
+      - name: Compile Tweak
+        run: |
+          make FINALPACKAGE=1
+
+      - name: Extract and Upload Dylib
+        uses: actions/upload-artifact@v4
+        with:
+          name: Compiled-Dylib
+          path: .theos/obj/**/*.dylib
