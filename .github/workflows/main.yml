@@ -17,6 +17,7 @@ jobs:
         run: |
           echo "THEOS=$HOME/theos" >> $GITHUB_ENV
           git clone --recursive https://github.com/theos/theos.git $HOME/theos
+          rm -rf $HOME/theos/sdks # Clears the default folder to prevent Git clone conflicts
           git clone https://github.com/theos/sdks.git $HOME/theos/sdks
 
       - name: Compile Tweak
