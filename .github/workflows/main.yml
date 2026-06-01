@@ -33,7 +33,7 @@ jobs:
 
       - name: Compile Tweak
         run: |
-          make FINALPACKAGE=1
+          make FINALPACKAGE=1 TARGET="iphone:clang:latest:14.0"
 
       - name: Extract and Upload Dylib
         uses: actions/upload-artifact@v4
